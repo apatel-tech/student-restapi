@@ -1,0 +1,41 @@
+---
+version: 3.9
+services:
+  student-srv:
+    build:
+      context: .
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    networks:
+      - student-net
+    environment:
+      - MYSQL_SERVER=students-db
+    depends_on:
+      - student-db
+  student-db:
+    image: mysql:5.6
+    networks:
+      - student-privatenet
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=directdevops
+      - MYSQL_PASSWORD=directdevops     
+networks:
+  student-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24
+  student-privatenet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24
+    
+    
